@@ -14,7 +14,7 @@ class WafRegexLogic:
     def __init__(self, resource_properties):
         self.regex_patterns = resource_properties['RegexPatterns']
         self.match_type = resource_properties['Type']
-        self.match_data = resource_properties['Data']
+        self.match_data = resource_properties.get('Data', '')
         self.transform = resource_properties['Transform']
         self.match_name = resource_properties['Name']
         self.pattern_name = f"{resource_properties['Name']}-pattern"
@@ -99,22 +99,26 @@ class WafRegexLogic:
         return response_create_match_set['RegexMatchSet']['RegexMatchSetId']
 
     def insert_match_set(self, match_set_id, pattern_set_id):
+        update = {
+            'Action': 'INSERT',
+            'RegexMatchTuple': {
+                'FieldToMatch': {
+                    'Type': self.match_type
+                },
+                'TextTransformation': self.transform,
+                'RegexPatternSetId': pattern_set_id
+            }
+        }
+
+        # This applies when `match_type` is 'HEADER' or 'SINGLE_QUERY_ARG'
+        if (self.match_data != '') {
+            update['RegexMatchTuple']['FieldToMatch']['Data'] = self.match_data
+        }
+
         changeToken = self.client.get_change_token()
         update_regex_matchset = self.client.update_regex_match_set(
             RegexMatchSetId=match_set_id,
-            Updates=[
-                {
-                    'Action': 'INSERT',
-                    'RegexMatchTuple': {
-                        'FieldToMatch': {
-                            'Type': self.match_type,
-                            'Data': self.match_data
-                        },
-                        'TextTransformation': self.transform,
-                        'RegexPatternSetId': pattern_set_id
-                    }
-                },
-            ],
+            Updates=[update],
             ChangeToken=changeToken['ChangeToken']
         )
 
