@@ -1,0 +1,25 @@
+{
+  "StackId": "arn:aws:cloudformation:us-west-2:EXAMPLE/stack-name/guid",
+  "ResponseURL": "http://pre-signed-S3-url-for-response",
+  "ResourceProperties": {
+    "EnvironmentName": "prod",
+    "Region": "ap-southeast-2",
+    "Rate": "5000",
+    "Priority": "10",
+    "Action": "BLOCK",
+    "Negated": "true",
+    "WebACLId": "98f6fb51-3ad7-4cff-8f68-a2f96e707ac4",
+    "Priority": "2",
+    "IPSet": [
+        {
+            "Type": "IPV4",
+            "Value": "123.22.64.68/32"
+        }
+    ]
+  },
+  "RequestType": "Delete",
+  "ResourceType": "Custom::WAFRateLimitFunction",
+  "RequestId": "unique id for this create request",
+  "LogicalResourceId": "WAFRateLimitFunction",
+  "PhysicalResourceId": "d55e2c88-3eb7-40d2-8135-cf65d3624b35"
+}
