@@ -21,6 +21,8 @@ def lambda_handler(event, context):
             lambda_response.respond_error(f"{key} property missing")
             return
 
+    replace = cr_params.get('Update', True)
+
     try:
         parameter = logic.SSMSecureParameterLogic(cr_params['Path'])
         length = 16 or cr_params['Length']
@@ -40,7 +42,7 @@ def lambda_handler(event, context):
         elif event['RequestType'] == 'Update':
             password, version = parameter.create(
                 length=length,
-                update=True
+                update=replace
             )
 
             event['PhysicalResourceId'] = cr_params['Path']
