@@ -15,7 +15,8 @@
             "Type": "IPV4",
             "Value": "123.22.64.68/32"
         }
-    ]
+    ],
+    "Regional": "true"
   },
   "RequestType": "Delete",
   "ResourceType": "Custom::WAFRateLimitFunction",

@@ -17,13 +17,17 @@ class WafRateLimit:
         self.ip_set = resource_properties['IPSet']
         self.negated = resource_properties['Negated']
         self.region = resource_properties['Region']
+        self.regional = resource_properties.get('Regional', 'false')
         self.web_acl_id = resource_properties['WebACLId']
         self.priority = int(resource_properties['Priority'])
         self.rule_name = f"{resource_properties['EnvironmentName']}-rate-limit"
         self.ip_set_name = f"{resource_properties['EnvironmentName']}-rate-limit-ip-set"
         self.metric_name = self.rule_name.replace('-', '')
 
-        self.client = boto3.client('waf', region_name=self.region)
+        if to_bool(self.regional):
+            self.client = boto3.client('waf-regional', region_name=self.region)
+        else:
+            self.client = boto3.client('waf', region_name=self.region)
 
     def retry(func):
         # Reattempt to execute a given function with optional arguments.
