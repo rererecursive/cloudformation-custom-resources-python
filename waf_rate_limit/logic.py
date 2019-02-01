@@ -20,8 +20,14 @@ class WafRateLimit:
         self.regional = resource_properties.get('Regional', 'false')
         self.web_acl_id = resource_properties['WebACLId']
         self.priority = int(resource_properties['Priority'])
-        self.rule_name = f"{resource_properties['EnvironmentName']}-rate-limit"
-        self.ip_set_name = f"{resource_properties['EnvironmentName']}-rate-limit-ip-set"
+
+        if 'EnvironmentName' in resource_properties:
+            self.rule_name = f"{resource_properties['EnvironmentName']}-rate-limit"
+            self.ip_set_name = f"{resource_properties['EnvironmentName']}-rate-limit-ip-set"
+        else:
+            self.rule_name = resource_properties['RuleName']
+            self.ip_set_name = resource_properties['IpSetName']
+
         self.metric_name = self.rule_name.replace('-', '')
 
         if to_bool(self.regional):
